@@ -7,7 +7,7 @@ const Header = () => {
 
     return (
         <div className={styles.root}>
-            <div className={styles.title}>ICON Multisig Wallet Manager</div>
+            <div className={styles.title}>Obsidian - ICON Multisig Wallet Manager</div>
             <Login />
         </div>
     )
