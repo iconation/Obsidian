@@ -1,0 +1,4 @@
+[ ] Make an interface for ICX transfer from the multisig wallet (this is top priority, even if the interface is extremely ugly, at least there's something working)
+[ ] Improve the interface for pending transactions
+[ ] Make a page for approving a pending transaction
+[ ] Improve the interface for executed transactions (make a page with details about who voted and when)

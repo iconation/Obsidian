@@ -1,0 +1,15 @@
+.dark {
+    background: #eeeeee !important;
+    font-weight: bold !important;
+}
+
+.actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: 100%;
+}
+
+.title {
+    margin: 15px;
+}

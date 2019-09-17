@@ -1,0 +1,64 @@
+@font-face {
+    font-family: 'MontSerrat';
+    font-style: normal;
+    font-weight: 600;
+    src: url('/static/fonts/montserrat-v12-latin-600.woff2'); /* IE9 Compat Modes */
+  }
+  
+.box {
+    background: rgba(0, 0, 0, .2);
+    border-radius: 5px;
+    box-shadow: 
+        -1px 2px 5px 1px rgba(0, 0, 0, 0),
+        -1px 2px 5px rgba(0, 0, 0, 0.3) inset; 
+}
+
+.outerbox {
+    background: rgba(100, 100, 100, 0.05);
+    box-shadow: 
+        -1px 2px 5px 1px rgba(0, 0, 0, 0),
+        -1px 2px 5px rgba(0, 0, 0, 0.3); 
+    border-radius: 10px;
+}
+
+.bigtitle {
+    color: #006195;
+    font-size: 35px;
+    text-align: center;
+}
+
+.mediumtitle {
+    font-size: 20px;
+}
+
+.smalltitle {
+    font-size: 18px;
+}
+
+.text {
+    font-size: 15px;
+}
+
+.link {
+    color: #3c789a;
+}
+
+.errorSnackBar {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color : #ff5050;
+}
+
+.infoSnackBar {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: bold;
+    color : #00af00;
+}
+
+.iconColor {
+    color: #2ccedd
+}
+
+.tt {
+    font-family: 'Courier New', Courier, monospace !important;
+}
