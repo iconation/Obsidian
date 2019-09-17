@@ -20,14 +20,16 @@ const Login = ({
       api.iconexAskAddress().then(address => {
         if (address) {
           var found = false
-          owners.forEach(owner => {
+          for (let i = 0; i < owners.length; i++) {
+            const owner = owners[i]
             if (owner === address) {
               found = true
               setLoggedWallet(address)
               window.sessionStorage.setItem('LoggedWallet', address)
               setInfoMessage('Successfully connected!')
+              break;
             }
-          })
+          }
 
           if (!found) {
             throw new Error('This wallet is not a wallet owner')

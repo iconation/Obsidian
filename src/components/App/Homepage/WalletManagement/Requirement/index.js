@@ -33,7 +33,7 @@ const Requirement = ({
     <div className={styles.root}>
 
       <TextField
-        disabled={loggedWallet ? null : 'true'}
+        disabled={loggedWallet ? null : true}
         className={styles.input}
         label='Wallet Confirmation Requirement'
         value={requirement || 0}
