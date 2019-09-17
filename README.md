@@ -10,7 +10,31 @@
  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-## Available Scripts
+## Definition & Purpose
+
+A Multi Signature Wallet is a SCORE that enables more than one user to manage their ICON funds safely. Such wallet can prevent one person from running off with the stored ICX or tokens and reduce the risk in case of one person is incapacitated or loses their keys.
+
+## How To Use
+### Definition
+
+#### Wallet
+SCORE in which ICX and tokens are stored in. Stored ICX and tokens can be used (transferred) only when the wallet conditions declared internally are satisfied.
+
+#### Wallet owner
+Addresses who have participation rights of the Wallet SCORE. 
+
+#### Transaction
+Initiated by a wallet owner, a transaction changes the wallet state (e.g., transfer tokens or ICX stored in the wallet, add a new wallet owner, change requirement of confirmations (2 to 3 -> 3 to 3), etc).
+
+#### Requirement
+The number of approvals from the wallet owners required for the transaction to be executed.
+
+
+Please refer to the official ICON multisig wallet for more information :
+https://github.com/icon-project/multisig-wallet
+
+
+## How To Build : Available Scripts
 
 In the project directory, you can run:
 
