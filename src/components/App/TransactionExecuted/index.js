@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import styles from './TransactionExecuted.css'
+import styles from './TransactionExecuted.module.scss'
 import core from 'themes/core.module.scss'
 import { api } from 'SCORE/API'
 import Table from '@material-ui/core/Table'
@@ -9,15 +9,32 @@ import TableCell from 'components/App/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import { IconAmount, IconConverter } from 'icon-sdk-js'
 import GoHomepage from 'components/App/GoHomepage'
+import {
+  setErrorMessage,
+  setOwnersList
+} from 'store/actions'
 
-const ConnectedTransactionExecuted = ({ match }) => {
+
+const ConnectedTransactionExecuted = ({ match, owners, setOwnersList }) => {
   const [tx, setTx] = useState(null)
   const multisigAddress = 'cx' + match.params.multisigAddress
   const transactionId = match.params.id
 
-  !tx && api.getTransactionInfo(multisigAddress, transactionId).then(tx => {
-    console.log(tx)
-    setTx(tx)
+  owners.length == 0 && api.getWalletOwnerCount(multisigAddress).then(ownersCount => {
+    api.getWalletOwners(multisigAddress, 0, ownersCount).then(owners => {
+      setOwnersList(owners)
+    }).catch(err => {
+      setErrorMessage(err)
+    })
+  }).catch(err => {
+    setErrorMessage(err)
+  })
+
+  owners.length != 0 && !tx && api.getTransactionInfo(multisigAddress, transactionId).then(tx => {
+    return api.getConfirmations(multisigAddress, 0, owners.length, tx['_transaction_id']).then(confirmationsAddresses => {
+      tx['_confirmationsAddresses'] = confirmationsAddresses
+      setTx(tx)
+    })
   })
 
   return <>
@@ -27,6 +44,19 @@ const ConnectedTransactionExecuted = ({ match }) => {
     {tx &&
       <Table size='small'>
         <TableBody>
+
+          <TableRow key={tx['_transaction_id'] + 'confirmation'}>
+            <TableCell className={styles.dark}>Confirmations</TableCell>
+            <TableCell>
+              <div className={styles.txConfirmations}>
+                {owners.map(owner => (
+                  tx['_confirmationsAddresses'].includes(owner)
+                    ? <div key={owner} tooltip={owner} className={styles.txConfirmed}></div>
+                    : <div key={owner} tooltip={owner} className={styles.txNotConfirmed}></div>
+                ))}
+              </div>
+            </TableCell>
+          </TableRow>
 
           <TableRow key={tx['_transaction_id'] + 'destination'}>
             <TableCell className={styles.dark}>Destination</TableCell>
@@ -61,12 +91,14 @@ const ConnectedTransactionExecuted = ({ match }) => {
 
 const mapStateToProps = state => {
   return {
-    multisigAddress: state.multisigAddress
+    owners: state.owners
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {}
+  return {
+    setOwnersList: (o) => dispatch(setOwnersList(o))
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConnectedTransactionExecuted)

@@ -28,11 +28,9 @@ const ConnectedTxExecuted = ({
     api.getTransactionList(multisigAddress, 0, txCount, false, true).then(async txList => {
       // Get additional information
       const confirmations = await Promise.all(txList.map(tx => {
-        return api.getConfirmationCount(multisigAddress, tx['_transaction_id']).then(count => {
-          return api.getConfirmations(multisigAddress, 0, count, tx['_transaction_id']).then(confirmationsAddresses => {
-            tx['_confirmationsAddresses'] = confirmationsAddresses
-            return tx
-          })
+        return api.getConfirmations(multisigAddress, 0, owners.length, tx['_transaction_id']).then(confirmationsAddresses => {
+          tx['_confirmationsAddresses'] = confirmationsAddresses
+          return tx
         })
       }))
       setTxExecuted(confirmations)
@@ -68,10 +66,10 @@ const ConnectedTxExecuted = ({
                   <TableRow key={tx['_transaction_id']}>
                     <TableCell>
                       <div className={styles.txConfirmations}>
-                        {owners.map(owner => console.log(owner) || (
-                          tx['_confirmationsAddresses'].includes(owner) ?
-                            <div tooltip={owner} className={styles.txConfirmed}></div>
-                            : <div tooltip={owner} className={styles.txNotConfirmed}></div>
+                        {owners.map(owner => (
+                          tx['_confirmationsAddresses'].includes(owner)
+                            ? <div key={owner} tooltip={owner} className={styles.txConfirmed}></div>
+                            : <div key={owner} tooltip={owner} className={styles.txNotConfirmed}></div>
                         ))}
                       </div>
                     </TableCell>

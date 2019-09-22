@@ -9,19 +9,29 @@ import TableCell from 'components/App/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import { IconAmount, IconConverter } from 'icon-sdk-js'
 import GoHomepage from 'components/App/GoHomepage'
-import { setErrorMessage, setInfoMessage } from 'store/actions'
+import { setErrorMessage, setOwnersList } from 'store/actions'
 import Revoke from './Revoke'
 import Confirm from './Confirm'
 
-const ConnectedTransactionPending = ({ match, loggedWallet, setInfoMessage, setErrorMessage }) => {
+const ConnectedTransactionPending = ({ match, loggedWallet, owners, setOwnersList, setErrorMessage }) => {
   const [tx, setTx] = useState(null)
   const multisigAddress = 'cx' + match.params.multisigAddress
   const transactionId = match.params.id
   const [requirement, setRequirement] = useState(null)
 
-  !tx && api.getTransactionInfo(multisigAddress, transactionId).then(tx => {
-    return api.getConfirmationCount(multisigAddress, tx['_transaction_id']).then(count => {
-      tx['_confirmationCount'] = count
+  owners.length == 0 && api.getWalletOwnerCount(multisigAddress).then(ownersCount => {
+    api.getWalletOwners(multisigAddress, 0, ownersCount).then(owners => {
+      setOwnersList(owners)
+    }).catch(err => {
+      setErrorMessage(err)
+    })
+  }).catch(err => {
+    setErrorMessage(err)
+  })
+
+  owners.length != 0 && !tx && api.getTransactionInfo(multisigAddress, transactionId).then(tx => {
+    return api.getConfirmations(multisigAddress, 0, owners.length, tx['_transaction_id']).then(confirmationsAddresses => {
+      tx['_confirmationsAddresses'] = confirmationsAddresses
       setTx(tx)
     })
   })
@@ -42,9 +52,17 @@ const ConnectedTransactionPending = ({ match, loggedWallet, setInfoMessage, setE
         <Table size='small'>
           <TableBody>
 
-            <TableRow key={tx['_transaction_id'] + 'req'}>
-              <TableCell className={styles.dark}>Requirement</TableCell>
-              <TableCell>{tx['_confirmationCount']} / {requirement}</TableCell>
+            <TableRow key={tx['_transaction_id'] + 'confirmations'}>
+              <TableCell className={styles.dark}>Confirmations</TableCell>
+              <TableCell>
+                <div className={styles.txConfirmations}>
+                  {owners.map(owner => (
+                    tx['_confirmationsAddresses'].includes(owner)
+                      ? <div key={owner} tooltip={owner} className={styles.txConfirmed}></div>
+                      : <div key={owner} tooltip={owner} className={styles.txNotConfirmed}></div>
+                  ))}
+                </div>
+              </TableCell>
             </TableRow>
 
             <TableRow key={tx['_transaction_id'] + 'destination'}>
@@ -87,14 +105,15 @@ const ConnectedTransactionPending = ({ match, loggedWallet, setInfoMessage, setE
 
 const mapStateToProps = state => {
   return {
-    loggedWallet: state.loggedWallet
+    loggedWallet: state.loggedWallet,
+    owners: state.owners
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setErrorMessage: (o) => dispatch(setErrorMessage(o)),
-    setInfoMessage: (o) => dispatch(setInfoMessage(o))
+    setOwnersList: (o) => dispatch(setOwnersList(o))
   }
 }
 

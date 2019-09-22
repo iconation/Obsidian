@@ -40,7 +40,8 @@ const App = ({ loggedWallet, setLoggedWallet }) => {
 
 const mapStateToProps = state => {
   return {
-    loggedWallet: state.loggedWallet
+    loggedWallet: state.loggedWallet,
+    owners: state.owners
   }
 }
 

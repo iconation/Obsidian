@@ -11,3 +11,51 @@
 .title {
     margin-bottom: 15px;
 }
+
+.txConfirmations {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.txConfirmed {
+    height: 25px;
+    width: 12px;
+    background : green;
+    margin-right: 5px;
+}
+
+.txNotConfirmed {
+    height: 25px;
+    width: 12px;
+    background : red;
+    margin-right: 5px;
+}
+
+[tooltip]:before {
+    /* needed - do not touch */
+    content: attr(tooltip);
+    position: absolute;
+    opacity: 0;
+    
+    /* customizable */
+    transition: all 0.15s ease;
+    padding: 10px;
+    color: #333;
+    border-radius: 10px;
+    box-shadow: 2px 2px 1px silver;    
+}
+
+[tooltip]:hover:before {
+    /* needed - do not touch */
+    opacity: 1;
+    
+    /* customizable */
+    background: linear-gradient(#35acc2, #55dce2);
+    margin-top: -30px;
+    margin-left: 10px;    
+}
+
+[tooltip]:not([tooltip-persistent]):before {
+    pointer-events: none;
+}
