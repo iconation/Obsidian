@@ -15,11 +15,11 @@ import { IconAmount, IconConverter } from 'icon-sdk-js'
 import Revoke from 'components/App/TransactionPending/Revoke'
 import Cancel from 'components/App/TransactionPending/Cancel'
 import Confirm from 'components/App/TransactionPending/Confirm'
-import { style } from '@material-ui/system'
 
 const ConnectedTxPending = ({
   multisigAddress,
   loggedWallet,
+  owners,
   setErrorMessage
 }) => {
   const [txPending, setTxPending] = useState(null)
@@ -32,8 +32,10 @@ const ConnectedTxPending = ({
       // Get additional information
       const confirmations = await Promise.all(txList.map(tx => {
         return api.getConfirmationCount(multisigAddress, tx['_transaction_id']).then(count => {
-          tx['_confirmationCount'] = count
-          return tx
+          return api.getConfirmations(multisigAddress, 0, count, tx['_transaction_id']).then(confirmationsAddresses => {
+            tx['_confirmationsAddresses'] = confirmationsAddresses
+            return tx
+          })
         })
       }))
       setTxPending(confirmations)
@@ -72,14 +74,22 @@ const ConnectedTxPending = ({
             <TableBody>
               {txPending.reverse().map(tx => (
                 <TableRow key={tx['_transaction_id']}>
-                  <TableCell>{tx['_confirmationCount']} / {requirement}</TableCell>
+                  <TableCell>
+                    <div className={styles.txConfirmations}>
+                      {owners.map(owner => console.log(owner) || (
+                        tx['_confirmationsAddresses'].includes(owner) ?
+                          <div tooltip={owner} className={styles.txConfirmed}></div>
+                          : <div tooltip={owner} className={styles.txNotConfirmed}></div>
+                      ))}
+                    </div>
+                  </TableCell>
                   <TableCell>{IconConverter.toNumber(IconAmount.of(tx['_value'], IconAmount.Unit.LOOP).convertUnit(IconAmount.Unit.ICX))}</TableCell>
                   <TableCell>{tx['_description']}</TableCell>
                   <TableCell>
                     <div className={styles.actions}>
                       <Button onClick={() => onDetails(tx['_transaction_id'])}>🔎 Details</Button>
                       {loggedWallet && (
-                        tx['_confirmationCount'] > 0
+                        tx['_confirmationsAddresses'].length > 0
                           ? <Revoke multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
                           : <Cancel multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
                       )}
@@ -98,7 +108,8 @@ const ConnectedTxPending = ({
 
 const mapStateToProps = state => {
   return {
-    loggedWallet: state.loggedWallet
+    loggedWallet: state.loggedWallet,
+    owners: state.owners
   }
 }
 

@@ -131,6 +131,16 @@ class API {
     })
   }
 
+  getConfirmations(multisigAddress, offset, count, transactionId) {
+    return this.__call(multisigAddress, 'getConfirmations', {
+      _offset: '0x' + offset.toString(16),
+      _count: '0x' + count.toString(16),
+      _transactionId: transactionId
+    }).then(list => {
+      return list
+    })
+  }
+
   getRequirement(multisigAddress) {
     return this.__call(multisigAddress, 'getRequirement', {}).then(req => {
       return parseInt(req, 16)
