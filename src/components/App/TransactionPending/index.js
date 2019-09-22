@@ -94,8 +94,10 @@ const ConnectedTransactionPending = ({ match, loggedWallet, owners, setOwnersLis
         </Table>
 
         {loggedWallet && <div className={styles.actions}>
-          <Revoke multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
-          <Confirm multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+          {tx['_confirmationsAddresses'].includes(loggedWallet)
+            ? <Revoke multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+            : <Confirm multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+          }
         </div>
         }
       </>
