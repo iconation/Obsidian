@@ -87,11 +87,13 @@ const ConnectedTxPending = ({
                     <div className={styles.actions}>
                       <Button onClick={() => onDetails(tx['_transaction_id'])}>🔎 Details</Button>
 
-                      {loggedWallet && tx['_confirmationsAddresses'].includes(loggedWallet) ?
-                        tx['_confirmationsAddresses'].length > 0
-                          ? <Revoke multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
-                          : <Cancel multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
-                        : <Confirm multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />}
+                      {loggedWallet &&
+                        (tx['_confirmationsAddresses'].includes(loggedWallet) ?
+                          tx['_confirmationsAddresses'].length > 0
+                            ? <Revoke multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+                            : <Cancel multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+                          : <Confirm multisigAddress={multisigAddress} transactionId={tx['_transaction_id']} />
+                        )}
                     </div>
                   </TableCell>
                 </TableRow>
